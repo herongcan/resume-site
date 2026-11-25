@@ -1,0 +1,83 @@
+---
+import Base from '../../layouts/Base.astro';
+import Contact from '../../components/Contact.astro';
+import { profile, projects } from '../../data/resume';
+import { url } from '../../lib/paths';
+
+export async function getStaticPaths() {
+  return projects.map((p, i) => ({
+    params: { slug: p.slug },
+    props: { project: p, index: i },
+  }));
+}
+
+const { project: p, index } = Astro.props as { project: (typeof projects)[number]; index: number };
+const prev = index > 0 ? projects[index - 1] : null;
+const next = index < projects.length - 1 ? projects[index + 1] : null;
+const description = `${p.title}：${p.tagline}。${p.summary}`.slice(0, 150);
+---
+
+<Base
+  title={`${p.title} | ${profile.name}`}
+  description={description}
+  path={`/projects/${p.slug}/`}
+>
+  <article class="detail">
+    <a class="detail__back" href={url('/projects')}>← 全部项目</a>
+
+    <header class="detail__head">
+      <h1>{p.title}</h1>
+      <p class="detail__tagline">{p.tagline}</p>
+      <div class="detail__meta">
+        <span class="mono">{p.period.replace('-', ' – ')}</span>
+        <span class="detail__dot">·</span>
+        <span>{p.role}</span>
+      </div>
+      <div class="project__stack">
+        {p.stack.map((t) => <span class="chip">{t}</span>)}
+      </div>
+    </header>
+
+    <section class="detail__section">
+      <h2>项目概述</h2>
+      <p class="detail__lead">{p.summary}</p>
+    </section>
+
+    <section class="detail__section">
+      <h2>做了什么</h2>
+      <div class="detail__highlights">
+        {p.highlights.map((h) => (
+          <div class="detail__hl">
+            <h3>{h.title}</h3>
+            <p>{h.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="detail__section">
+      <h2>价值与结果</h2>
+      <ul class="value">
+        {p.value.map((v) => <li>{v}</li>)}
+      </ul>
+    </section>
+
+    {p.links?.length && (
+      <section class="detail__section">
+        <h2>相关链接</h2>
+        <div class="project__links">
+          {p.links.map((l) => (
+            <a href={l.href} target="_blank" rel="noreferrer">{l.label} ↗</a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <nav class="detail__pager">
+      {prev ? <a href={url(`/projects/${prev.slug}`)}>← {prev.title}</a> : <span></span>}
+      {next ? <a href={url(`/projects/${next.slug}`)}>{next.title} →</a> : <span></span>}
+    </nav>
+  </article>
+
+  <Contact />
+</Base>

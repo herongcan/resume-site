@@ -1,0 +1,56 @@
+---
+import { projects, minorProjects } from '../data/resume';
+import ProjectCard from './ProjectCard.astro';
+import { url } from '../lib/paths';
+
+interface Props {
+  /** 只展示 featured 项目（用于首页精简模式） */
+  featuredOnly?: boolean;
+  /** 隐藏早期项目折叠区 */
+  hideMinor?: boolean;
+}
+const { featuredOnly = false, hideMinor = false } = Astro.props;
+
+const featured = projects.filter((p) => p.featured);
+const rest = featuredOnly ? [] : projects.filter((p) => !p.featured);
+const total = featured.length + rest.length;
+---
+
+{featured.map((p, i) => <ProjectCard project={p} index={i} lead={i === 0} />)}
+
+{rest.length > 0 && (
+  <>
+    <div class="section__sub"><h3>其他工作项目</h3></div>
+    {rest.map((p, i) => <ProjectCard project={p} index={featured.length + i} />)}
+  </>
+)}
+
+{!hideMinor && minorProjects.length > 0 && (
+  <>
+    <div class="section__sub">
+      <h3>早期项目</h3>
+      <span class="section__note">{minorProjects.length} 个</span>
+    </div>
+    <div class="grid grid--2">
+      {minorProjects.map((m) => (
+        <article class="card minor">
+          <div class="minor__top">
+            <h4>{m.title}</h4>
+            <span class="mono">{m.period}</span>
+          </div>
+          <p class="minor__role">{m.role}</p>
+          <p>{m.summary}</p>
+          <div class="project__stack">
+            {m.stack.map((t) => <span class="chip">{t}</span>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </>
+)}
+
+{total > 0 && (
+  <p class="section__more">
+    <a class="btn btn--ghost" href={url('/projects')}>全部项目（{projects.length + minorProjects.length}）→</a>
+  </p>
+)}

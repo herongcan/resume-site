@@ -1,0 +1,21 @@
+---
+import { profile, links } from '../data/resume';
+---
+
+<section class="contact" id="contact">
+  <h2>聊聊？</h2>
+  <p class="contact__sub">{profile.expectRole} · {profile.expectCity}</p>
+  <div class="contact__rows">
+    <a class="contact__row" href={`mailto:${profile.email}`}>
+      <span>邮箱</span><b class="mono">{profile.email}</b>
+    </a>
+    <a class="contact__row" href={links.github} target="_blank" rel="noreferrer">
+      <span>GitHub</span><b class="mono">{profile.github}</b>
+    </a>
+    {profile.phoneOnPublicSite && profile.phone && (
+      <a class="contact__row" href={`tel:${profile.phone}`}>
+        <span>手机</span><b class="mono">{profile.phone}</b>
+      </a>
+    )}
+  </div>
+</section>

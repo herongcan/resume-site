@@ -1,0 +1,143 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { profile, education, links } from '../data/resume';
+import { url, asset } from '../lib/paths';
+
+interface Props {
+  title: string;
+  description: string;
+  /** 当前页路径，用于 canonical 与 og:url */
+  path?: string;
+  /** home：导航跳到本页锚点；inner：导航跳回首页锚点 */
+  navMode?: 'home' | 'inner';
+  mainClass?: string;
+}
+
+const { title, description, path = '/', navMode = 'inner', mainClass = 'wrap' } = Astro.props;
+
+const canonical = new URL(url(path), Astro.site ?? 'https://resume.herongcan.icu').toString();
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.title,
+  description: profile.subline,
+  email: `mailto:${profile.email}`,
+  url: canonical,
+  sameAs: [links.github],
+  address: { '@type': 'PostalAddress', addressLocality: profile.location, addressCountry: 'CN' },
+  alumniOf: { '@type': 'EducationalOrganization', name: education.school },
+  knowsAbout: ['Java', 'Spring Boot', 'Spring Cloud', '微服务', '规则引擎', '系统集成', 'MySQL', 'Redis', 'RabbitMQ'],
+};
+---
+
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      (function () {
+        try {
+          var t = localStorage.getItem('resume-site-theme');
+          if (t) document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={asset('favicon.svg')} />
+    <meta name="theme-color" content="#0a0c0f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)" />
+    <meta name="author" content={profile.name} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={`${profile.name} · ${profile.title}`} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="zh_CN" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a class="skip" href="#top">跳到主内容</a>
+    <Nav mode={navMode} />
+    <main class={mainClass} id="top">
+      <slot />
+    </main>
+    <Footer />
+
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var btn = document.getElementById('themeBtn');
+        if (btn) {
+          btn.addEventListener('click', function () {
+            var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            try {
+              localStorage.setItem('resume-site-theme', next);
+            } catch (e) {}
+          });
+        }
+
+        document.querySelectorAll('.toggle').forEach(function (toggle) {
+          toggle.addEventListener('click', function () {
+            var card = toggle.closest('.project');
+            if (!card) return;
+            var open = card.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            var label = toggle.querySelector('.toggle__text');
+            if (label) label.textContent = open ? '收起' : '查看详情';
+            if (!open) {
+              var rect = card.getBoundingClientRect();
+              if (rect.top < 60) window.scrollTo({ top: window.scrollY + rect.top - 74, behavior: 'smooth' });
+            }
+          });
+        });
+
+        /* 移动端导航：汉堡按钮展开下拉面板 */
+        var nav = document.getElementById('siteNav');
+        var navToggle = document.getElementById('navToggle');
+        if (nav && navToggle) {
+          var setNav = function (open) {
+            nav.classList.toggle('is-open', open);
+            navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            navToggle.setAttribute('aria-label', open ? '关闭导航菜单' : '打开导航菜单');
+          };
+          navToggle.addEventListener('click', function () {
+            setNav(!nav.classList.contains('is-open'));
+          });
+          /* 点任一链接（含菜单项与品牌）后收起 */
+          nav.addEventListener('click', function (e) {
+            if (e.target.closest('a')) setNav(false);
+          });
+          /* Esc 收起并回到按钮 */
+          document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+              setNav(false);
+              navToggle.focus();
+            }
+          });
+          /* 点面板外部收起 */
+          document.addEventListener('click', function (e) {
+            if (nav.classList.contains('is-open') && !nav.contains(e.target)) setNav(false);
+          });
+          /* 视口变宽后重置，避免宽屏残留展开态 */
+          window.addEventListener('resize', function () {
+            if (window.innerWidth > 600 && nav.classList.contains('is-open')) setNav(false);
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

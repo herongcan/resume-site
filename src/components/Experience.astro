@@ -1,0 +1,28 @@
+---
+import { experiences, education } from '../data/resume';
+---
+
+<div class="timeline">
+  {experiences.map((e, i) => (
+    <article class:list={['job', i === 0 && 'job--now']}>
+      <div class="job__side">
+        <span class="mono">{e.period.replace('-', ' – ')}</span>
+      </div>
+      <div class="job__body">
+        <h3>{e.company}</h3>
+        <p class="job__role">{e.role}</p>
+        <ul>
+          {e.points.map((pt) => <li>{pt}</li>)}
+        </ul>
+      </div>
+    </article>
+  ))}
+
+  <article class="job job--edu">
+    <div class="job__side"><span class="mono">{education.period.replace('-', ' – ')}</span></div>
+    <div class="job__body">
+      <h3>{education.school}</h3>
+      <p class="job__role">{education.degree}{education.extra ? ` · ${education.extra}` : ''}</p>
+    </div>
+  </article>
+</div>

@@ -1,0 +1,42 @@
+---
+import { profile } from '../data/resume';
+import { url, homeAnchor } from '../lib/paths';
+
+interface Props {
+  mode?: 'home' | 'inner';
+}
+const { mode = 'inner' } = Astro.props;
+
+const items: { id: string; label: string }[] = [
+  { id: 'advantages', label: '优势' },
+  { id: 'projects', label: '项目' },
+  { id: 'skills', label: '技能' },
+  { id: 'experience', label: '经历' },
+  { id: 'about', label: '总结' },
+];
+
+const hrefFor = (id: string) => (mode === 'home' ? `#${id}` : homeAnchor(id));
+---
+
+<nav class="nav" id="siteNav">
+  <div class="wrap nav__in">
+    <a class="nav__brand" href={mode === 'home' ? '#top' : url('/')}>{profile.name}<span>.</span></a>
+    <div class="nav__links" id="navMenu">
+      {items.map((it) => <a href={hrefFor(it.id)}>{it.label}</a>)}
+      <span class="nav__sep" aria-hidden="true"></span>
+      <a class="nav__extra" href={url('/projects')}>全部项目</a>
+      <a class="nav__extra" href={url('/resume')}>简历</a>
+    </div>
+    <button class="theme" id="themeBtn" type="button" aria-label="切换明暗主题">◐</button>
+    <button
+      class="nav__toggle"
+      id="navToggle"
+      type="button"
+      aria-label="打开导航菜单"
+      aria-expanded="false"
+      aria-controls="navMenu"
+    >
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>

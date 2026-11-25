@@ -1,0 +1,144 @@
+---
+import Base from '../layouts/Base.astro';
+import { profile, education, advantages, skills, experiences, projects, links } from '../data/resume';
+import { url } from '../lib/paths';
+
+const featured = projects.filter((p) => p.featured);
+const sortedSkills = [...skills].sort((a, b) => b.weight - a.weight);
+const contactLine = [
+  profile.location,
+  profile.email,
+  profile.phoneOnPublicSite ? profile.phone : '',
+].filter(Boolean);
+
+/** 有外链的项目，用于「个人项目与开源」一节 */
+const linkedProjects = projects
+  .filter((p) => (p.links?.length ?? 0) > 0)
+  .map((p) => ({ title: p.title, links: p.links ?? [] }));
+---
+
+<Base
+  title={`简历 | ${profile.name} · ${profile.title}`}
+  description={`${profile.name}的在线简历：${profile.subline}`}
+  path="/resume/"
+  mainClass="wrap wrap--resume"
+>
+  <div class="resume-toolbar">
+    <a class="detail__back" href={url('/')}>← 回首页</a>
+    <button class="btn btn--print" type="button" id="printBtn">打印 / 存为 PDF</button>
+  </div>
+
+  <article class="sheet">
+    <header class="sheet__head">
+      <div class="sheet__id">
+        <h1>{profile.name}</h1>
+        <p class="sheet__role">{profile.title}</p>
+      </div>
+      <ul class="sheet__contact mono">
+        {contactLine.map((c) => <li>{c}</li>)}
+        <li><a href={links.github} target="_blank" rel="noreferrer">{links.github.replace('https://', '')}</a></li>
+      </ul>
+    </header>
+
+    <p class="sheet__intent">
+      <span class="sheet__label">求职意向</span>
+      {profile.expectRole} · {profile.expectCity}
+    </p>
+
+    <section class="sheet__section">
+      <h2>个人优势</h2>
+      <ul class="sheet__list">
+        {advantages.map((a) => (
+          <li><b>{a.title}</b>：{a.body}</li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="sheet__section">
+      <h2>专业技能</h2>
+      <dl class="sheet__skills">
+        {sortedSkills.map((s) => (
+          <div class="sheet__skill-row">
+            <dt>{s.group}</dt>
+            <dd>{s.items.join('、')}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <section class="sheet__section">
+      <h2>工作经历</h2>
+      {experiences.map((e) => (
+        <div class="sheet__job">
+          <div class="sheet__job-top">
+            <h3>{e.company}<span class="sheet__sep">·</span><span class="sheet__role-sm">{e.role}</span></h3>
+            <span class="mono sheet__period">{e.period.replace('-', ' – ')}</span>
+          </div>
+          <ul class="sheet__list">
+            {e.points.map((pt) => <li>{pt}</li>)}
+          </ul>
+        </div>
+      ))}
+    </section>
+
+    <section class="sheet__section">
+      <h2>项目经历</h2>
+      {featured.map((p) => (
+        <div class="sheet__job">
+          <div class="sheet__job-top">
+            <h3>
+              <a href={url(`/projects/${p.slug}`)}>{p.title}</a>
+              <span class="sheet__sep">·</span>
+              <span class="sheet__role-sm">{p.role}</span>
+            </h3>
+            <span class="mono sheet__period">{p.period.replace('-', ' – ')}</span>
+          </div>
+          <p class="sheet__desc">{p.tagline}</p>
+          <ul class="sheet__list">
+            {p.value.map((v) => <li>{v}</li>)}
+          </ul>
+        </div>
+      ))}
+    </section>
+
+    <section class="sheet__section">
+      <h2>教育背景</h2>
+      <div class="sheet__job">
+        <div class="sheet__job-top">
+          <h3>{education.school}<span class="sheet__sep">·</span><span class="sheet__role-sm">{education.degree}</span></h3>
+          <span class="mono sheet__period">{education.period.replace('-', ' – ')}</span>
+        </div>
+        <p class="sheet__desc">{education.extra}</p>
+      </div>
+    </section>
+
+    <section class="sheet__section">
+      <h2>个人项目与开源</h2>
+      <ul class="sheet__list">
+        {linkedProjects.map((item) => (
+          <li>
+            <b>{item.title}</b>：
+            {item.links.map((l, i) => (
+              <span>
+                {i > 0 && ' · '}
+                <a href={l.href} target="_blank" rel="noreferrer">{l.label}</a>
+              </span>
+            ))}
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <footer class="sheet__foot mono">
+      <span>{profile.name} · {profile.title}</span>
+      <span>更新于 {new Date().toISOString().slice(0, 7)}</span>
+    </footer>
+  </article>
+
+  <script is:inline>
+    (function () {
+      var btn = document.getElementById('printBtn');
+      if (btn) btn.addEventListener('click', function () { window.print(); });
+    })();
+  </script>
+</Base>

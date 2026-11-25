@@ -1,0 +1,19 @@
+---
+import { profile, links } from '../data/resume';
+import { url } from '../lib/paths';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="wrap site-foot">
+  <div class="site-foot__left">
+    <span>{profile.name} · {profile.title}</span>
+    <span class="mono site-foot__meta">© {year} · 深圳</span>
+  </div>
+  <div class="site-foot__links">
+    <a href={url('/resume')}>简历</a>
+    <a href={url('/projects')}>项目</a>
+    <a href={links.github} target="_blank" rel="noreferrer">GitHub</a>
+    <a href={`mailto:${profile.email}`}>邮箱</a>
+  </div>
+</footer>

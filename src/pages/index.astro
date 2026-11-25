@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import Advantages from '../components/Advantages.astro';
+import Projects from '../components/Projects.astro';
+import Skills from '../components/Skills.astro';
+import Fullstack from '../components/Fullstack.astro';
+import Experience from '../components/Experience.astro';
+import Migration from '../components/Migration.astro';
+import TechSummary from '../components/TechSummary.astro';
+import Contact from '../components/Contact.astro';
+import { profile, projects } from '../data/resume';
+
+const featuredCount = projects.filter((p) => p.featured).length;
+---
+
+<Base
+  title={`${profile.name} | ${profile.title} · 全栈交付`}
+  description={profile.subline}
+  path="/"
+  navMode="home"
+>
+  <Hero />
+
+  <Section title="个人优势" note="3 条主线" id="advantages">
+    <Advantages />
+  </Section>
+
+  <Section title="精选项目" note={`${featuredCount} 个工作项目 / 个人项目`} id="projects">
+    <Projects />
+  </Section>
+
+  <Section title="技能图谱" note="按使用密度与落地证据排序" id="skills">
+    <Skills />
+  </Section>
+
+  <Section title="管理后台 / 全栈交付" note="次线能力，独立展示" id="fullstack">
+    <Fullstack />
+  </Section>
+
+  <Section title="工作经历" note="2018.07 起" id="experience">
+    <Experience />
+  </Section>
+
+  <Section title="能力可迁移" note="同一套能力，换行业长什么样" id="migration">
+    <Migration />
+  </Section>
+
+  <Section title="技术总结" note="关于这一套能力" id="about">
+    <TechSummary />
+  </Section>
+
+  <Contact />
+</Base>

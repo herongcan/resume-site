@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import { profile } from '../data/resume';
+import { url } from '../lib/paths';
+---
+
+<Base title={`页面不存在 | ${profile.name}`} description="页面不存在" path="/404/">
+  <section class="notfound">
+    <p class="eyebrow"><span class="dot"></span>404</p>
+    <h1>这个地址没有内容</h1>
+    <p class="page-head__sub">链接可能改过，或者被手误打错。回首页看项目与经历。</p>
+    <div class="notfound__cta">
+      <a class="btn btn--primary" href={url('/')}>回首页</a>
+      <a class="btn" href={url('/projects')}>全部项目</a>
+    </div>
+  </section>
+</Base>

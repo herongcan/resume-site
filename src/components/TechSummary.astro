@@ -1,0 +1,12 @@
+---
+import { techSummary } from '../data/resume';
+---
+
+<div class="about">
+  {techSummary.map((t) => (
+    <div class="about__block">
+      <h3>{t.title}</h3>
+      <p>{t.body}</p>
+    </div>
+  ))}
+</div>

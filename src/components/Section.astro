@@ -1,0 +1,18 @@
+---
+interface Props {
+  title: string;
+  note?: string;
+  id?: string;
+  /** 追加 class，用于不同页面微调间距 */
+  class?: string;
+}
+const { title, note, id, class: cls } = Astro.props;
+---
+
+<section class:list={['section', cls]} id={id}>
+  <div class="section__head">
+    <h2>{title}</h2>
+    {note && <span class="section__note">{note}</span>}
+  </div>
+  <slot />
+</section>

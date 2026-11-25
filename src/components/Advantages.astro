@@ -1,0 +1,13 @@
+---
+import { advantages } from '../data/resume';
+---
+
+<div class="grid grid--3">
+  {advantages.map((a, i) => (
+    <article class="card advantage">
+      <span class="index">{String(i + 1).padStart(2, '0')}</span>
+      <h3>{a.title}</h3>
+      <p>{a.body}</p>
+    </article>
+  ))}
+</div>

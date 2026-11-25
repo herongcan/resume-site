@@ -1,0 +1,15 @@
+---
+import { capabilityMigration } from '../data/resume';
+---
+
+<div class="grid grid--2">
+  {capabilityMigration.map((m) => (
+    <article class="card migration">
+      <div class="migration__caps">
+        {m.capabilities.map((c) => <span class="chip">{c}</span>)}
+      </div>
+      <p class="migration__arrow">↓ 可迁移至</p>
+      <p class="migration__scene">{m.scenarios}</p>
+    </article>
+  ))}
+</div>

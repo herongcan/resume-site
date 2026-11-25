@@ -1,0 +1,21 @@
+---
+import { skills } from '../data/resume';
+
+const sorted = [...skills].sort((a, b) => b.weight - a.weight);
+---
+
+<div class="skills">
+  {sorted.map((s) => (
+    <div class="skill">
+      <div class="skill__head">
+        <h3>{s.group}</h3>
+        <span class="skill__weight mono">{Math.round(s.weight * 100)}</span>
+      </div>
+      <div class="bar"><i style={`width:${Math.round(s.weight * 100)}%`}></i></div>
+      <div class="skill__items">
+        {s.items.map((t) => <span class="chip">{t}</span>)}
+      </div>
+      <p class="skill__proof">{s.proof}</p>
+    </div>
+  ))}
+</div>

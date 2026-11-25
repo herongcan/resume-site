@@ -1,0 +1,60 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import Contact from '../../components/Contact.astro';
+import { profile, projects, minorProjects } from '../../data/resume';
+
+const featured = projects.filter((p) => p.featured);
+const rest = projects.filter((p) => !p.featured);
+---
+
+<Base
+  title={`全部项目 | ${profile.name} · ${profile.title}`}
+  description={`${profile.name}的项目清单：${projects.length} 个工作与个人项目，含规则决策、三方集成、任务流与独立上线产品。`}
+  path="/projects/"
+>
+  <header class="page-head">
+    <p class="eyebrow"><span class="dot"></span>项目清单</p>
+    <h1>{projects.length + minorProjects.length} 个项目</h1>
+    <p class="page-head__sub">
+      按「贴目标岗位」排序，不按时间：规则决策与平台研发在前，个人产品与早期项目在后。每个项目可展开要点，也可进详情页看完整复盘。
+    </p>
+  </header>
+
+  <section class="section" id="projects">
+    <div class="section__head">
+      <h2>核心项目</h2>
+      <span class="section__note">{featured.length} 个</span>
+    </div>
+    {featured.map((p, i) => <ProjectCard project={p} index={i} lead={i === 0} />)}
+
+    {rest.length > 0 && (
+      <>
+        <div class="section__sub"><h3>其他工作项目</h3></div>
+        {rest.map((p, i) => <ProjectCard project={p} index={featured.length + i} />)}
+      </>
+    )}
+
+    <div class="section__sub">
+      <h3>早期项目</h3>
+      <span class="section__note">{minorProjects.length} 个</span>
+    </div>
+    <div class="grid grid--2">
+      {minorProjects.map((m) => (
+        <article class="card minor">
+          <div class="minor__top">
+            <h4>{m.title}</h4>
+            <span class="mono">{m.period}</span>
+          </div>
+          <p class="minor__role">{m.role}</p>
+          <p>{m.summary}</p>
+          <div class="project__stack">
+            {m.stack.map((t) => <span class="chip">{t}</span>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <Contact />
+</Base>

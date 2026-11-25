@@ -1,0 +1,41 @@
+---
+import { profile, education, experiences, links } from '../data/resume';
+
+const facts: [string, string][] = [
+  ['公司', experiences[0].companyLegal ?? experiences[0].company],
+  ['职位', experiences[0].role],
+  ['时段', experiences[0].period.replace('-', ' – ')],
+  ['经验', `${profile.years} 年 Java 后端与微服务`],
+  ['学历', `${education.school} · ${education.degree}`],
+  ['期望岗位', profile.expectRole],
+];
+
+const sublineParts = profile.subline.split('·').map((t) => t.trim()).filter(Boolean);
+const titleLines = profile.headlineLines?.length ? profile.headlineLines : [profile.headline];
+---
+
+<header class="hero">
+  <div class="hero__main">
+    <p class="eyebrow"><span class="dot"></span>{profile.title} · {profile.location}</p>
+    <h1 class="hero__title">
+      {titleLines.map((line) => <span class="hero__line">{line}</span>)}
+    </h1>
+    <p class="hero__sub">
+      {sublineParts.map((t) => <span class="hero__sub-line">{t}</span>)}
+    </p>
+    <div class="hero__tags">
+      {profile.titleTags.map((t) => <span class="tag">{t}</span>)}
+    </div>
+    <div class="hero__cta">
+      <a class="btn btn--primary" href={`mailto:${profile.email}`}>邮件联系</a>
+      <a class="btn" href={links.github} target="_blank" rel="noreferrer">GitHub</a>
+      <a class="btn btn--ghost" href="#projects">看项目 ↓</a>
+    </div>
+  </div>
+  <aside class="facts">
+    {facts.map(([k, v]) => (
+      <div class="facts__row"><span class="facts__k">{k}</span><span class="facts__v">{v}</span></div>
+    ))}
+    <div class="facts__row"><span class="facts__k">邮箱</span><span class="facts__v mono">{profile.email}</span></div>
+  </aside>
+</header>
